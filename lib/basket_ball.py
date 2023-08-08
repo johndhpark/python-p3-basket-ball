@@ -182,3 +182,85 @@ def game_dict():
             ]
         }
     }
+
+game_result = game_dict()
+
+
+
+def num_points_per_game(player_name):
+    player  = player_stats(player_name)
+
+    if player != None:
+        return player["points_per_game"]
+
+    return None
+
+def player_age(player_name):
+    player  = player_stats(player_name)
+
+    if player != None:
+        return player["age"]
+
+    return None
+
+
+def team_colors(team):
+    if game_result["home"]["team_name"] == team:
+        return game_result["home"]["colors"]
+
+    if game_result["away"]["team_name"] == team:
+        return game_result["away"]["colors"]
+
+    return None
+
+
+def team_names():
+    return [game_result["home"]["team_name"], game_result["away"]["team_name"]]
+
+
+def player_numbers(team_name):
+    if game_result["home"]["team_name"] == team_name:
+        return [player_num["number"] for player_num in game_result["home"]["players"]]
+    
+    if game_result["away"]["team_name"] == team_name:
+        return [player_num["number"] for player_num in game_result["away"]["players"]]
+
+    return []
+
+
+def player_stats(player_name):
+    for player in game_result["home"]["players"]:
+        if player["name"] == player_name:
+            return player
+
+    for player in game_result["away"]["players"]:
+        if player["name"] == player_name:
+            return player
+
+    return None
+
+
+def average_rebounds_by_shoe_brand():
+    rebounds_by_brand = {}
+    player_count_by_brand = {}
+
+    for player in game_result["home"]["players"]:
+        shoe_brand = player["shoe_brand"]
+        rebounds_per_game = player["rebounds_per_game"]
+
+        rebounds_by_brand[shoe_brand] = rebounds_by_brand.get(shoe_brand, 0) + rebounds_per_game
+        player_count_by_brand[shoe_brand] = player_count_by_brand.get(shoe_brand, 0) + 1
+
+
+    for player in game_result["away"]["players"]:
+        shoe_brand = player["shoe_brand"]
+        rebounds_per_game = player["rebounds_per_game"]
+
+        rebounds_by_brand[shoe_brand] = rebounds_by_brand.get(shoe_brand, 0) + rebounds_per_game
+        player_count_by_brand[shoe_brand] = player_count_by_brand.get(shoe_brand, 0) + 1
+
+
+    for brand_name in player_count_by_brand:
+        avg = rebounds_by_brand[brand_name] / player_count_by_brand[brand_name]
+
+        print(f"{brand_name}:  {avg:.2f}")
